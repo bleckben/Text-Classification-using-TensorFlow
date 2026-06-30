@@ -1,0 +1,128 @@
+NLP Coursework 1 — Text Classification Using TF-Hub NNLM Embeddings
+
+SUBMISSION CONTENTS
+-------------------
+This zip file contains the following files:
+
+1. NLP_Task1_Colab.ipynb
+   Google Colab notebook — designed to run in the cloud (Google Colab) with GPU
+   acceleration. Installs all required packages automatically via pip at the top
+   of the notebook. No local setup required — simply open in Google Colab and
+   run all cells sequentially.
+
+2. NLP_Task1_Local.ipynb
+   Local machine notebook — designed to run inside a Python virtual environment
+   on a local machine (CPU only). Install dependencies first using requirements.txt
+   (see below), then run all cells sequentially in Jupyter.
+
+3. arxiv_dataset.csv
+   Pre-collected dataset of 1,999 arXiv research paper abstracts across four
+   scientific domains: Machine Learning (500), Astrophysics (499), Mathematics (500),
+   and Biology (500). Collected via the arXiv public API. Each row contains two
+   columns: 'text' (title + abstract concatenated) and 'label' (domain name).
+   Both notebooks cache-check for this file on startup — if present, it is loaded
+   directly; if absent, the notebooks will re-fetch the data from the arXiv API
+   (requires an internet connection, ~2 minutes).
+
+4. requirements.txt
+   Python package dependencies for the LOCAL environment (NLP_Task1_Local.ipynb).
+   Install using:
+       pip install -r requirements.txt
+   Key packages: tensorflow==2.20.0, tensorflow-hub, tf-keras, scikit-learn==1.8.0,
+   nltk==3.9.2, wordcloud==1.9.6, numpy==2.4.2.
+   Note: The Colab notebook manages its own dependencies via pip install cells
+   and does not use this requirements file.
+
+5. Read Me.txt
+   This file.
+
+
+HOW TO RUN — LOCAL (NLP_Task1_Local.ipynb)
+-------------------------------------------
+Requirements: Python 3.11+, pip, Jupyter Notebook or JupyterLab
+
+Step 1: Create and activate a virtual environment
+    python -m venv nlp_env
+    source nlp_env/bin/activate          # Linux / macOS
+    nlp_env\Scripts\activate             # Windows
+
+Step 2: Install dependencies
+    pip install -r requirements.txt
+
+Step 3: Launch Jupyter
+    jupyter notebook NLP_Task1_Local.ipynb
+
+Step 4: Run all cells in order (Kernel → Restart & Run All)
+
+Expected runtime (CPU only): approximately 3–5 minutes total
+  - TF-Hub model downloads:  ~60–90 seconds (first run only, cached thereafter)
+  - NNLM-50 training:        ~8 seconds
+  - NNLM-50-Norm training:   ~8 seconds
+  - NNLM-128-Norm training:  ~8 seconds
+  - EDA, preprocessing, evaluation: <2 minutes combined
+
+Output files are saved to the outputs/ directory:
+  outputs/eda/           — EDA plots and word clouds
+  outputs/nnlm50/        — NNLM-50 training history and confusion matrix
+  outputs/nnlm50_norm/   — NNLM-50-Norm training history and confusion matrix
+  outputs/nnlm128_norm/  — NNLM-128-Norm training history and confusion matrix
+  outputs/comparison/    — Model comparison charts and training time plots
+
+--------------------------------------------------------------------------------
+
+HOW TO RUN — CLOUD (NLP_Task1_Colab.ipynb)
+--------------------------------------------
+Requirements: Google account, internet connection
+
+Step 1: Upload NLP_Task1_Colab.ipynb to Google Drive or open directly in
+        Google Colab (colab.research.google.com).
+
+Step 2: (Recommended) Also upload arxiv_dataset.csv to the Colab session
+        to skip the API download step. If not uploaded, the notebook will
+        fetch it automatically (~2 minutes).
+
+Step 3: (Optional) Set the Colab runtime to GPU:
+        Runtime → Change runtime type → Hardware accelerator → T4 GPU
+
+Step 4: Run all cells in order (Runtime → Run all)
+
+Expected runtime: approximately 2–4 minutes total
+  - Package installation:    ~30 seconds
+  - TF-Hub model downloads:  ~60 seconds (first run only)
+  - Training (all 3 models): ~30–60 seconds
+  - EDA, preprocessing, evaluation: <2 minutes combined
+
+
+MODEL RESULTS (LOCAL RUN)
+
+Three pre-trained TF-Hub NNLM embedding models are compared using a simple
+classifier architecture: hub_layer → Dense(16, relu) → Dense(4, softmax).
+
+  Model             Embedding Dim   Accuracy   F1 Score   Train Time
+  -----------------------------------------------------------------------
+  NNLM-50           50              84.75%     0.8469     8.1 s
+  NNLM-50-Norm      50 (normed)     88.50%     0.8853     8.0 s
+  NNLM-128-Norm     128 (normed)    93.25%     0.9327     8.5 s
+
+
+ENVIRONMENT VERSIONS (LOCAL)
+
+OS         : Windows 10 / WSL2 Linux kernel 6.6.87
+Python     : 3.11.9
+tensorflow : 2.20.0
+tensorflow-hub: 0.16.1
+numpy      : 2.4.2
+pandas     : 3.0.1
+scikit-learn: 1.8.0
+matplotlib : 3.10.8
+nltk       : 3.9.2
+wordcloud  : 1.9.6
+GPU        : None (CPU only)
+
+ENVIRONMENT VERSIONS (GOOGLE COLAB — at time of execution)
+
+OS         : Linux (Colab runtime)
+Python     : 3.11+
+tensorflow : 2.19.0+
+tensorflow-hub: latest (installed via pip)
+GPU        : Tesla T4 (if GPU runtime selected)
